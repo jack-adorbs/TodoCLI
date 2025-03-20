@@ -17,10 +17,7 @@ public class App {
         CommandLanguage.setTaskManager(taskManager);
         if (filename.exists()) {
             CommandLanguage.evaluate(Command.load);
-        } else {
-            taskManager = new TaskManager();
         }
-        
 
         while (true) {
             System.out.print("Enter a command: ");
