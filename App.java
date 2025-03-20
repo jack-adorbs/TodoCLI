@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Scanner;
 
 import CommandLanguage.CommandLanguage;
@@ -11,8 +12,15 @@ public class App {
         String command;
         String[] parts;
         Command potentialCommand;
-
+        File filename = new File("data.ser");
+        
         CommandLanguage.setTaskManager(taskManager);
+        if (filename.exists()) {
+            CommandLanguage.evaluate(Command.load);
+        } else {
+            taskManager = new TaskManager();
+        }
+        
 
         while (true) {
             System.out.print("Enter a command: ");
@@ -37,6 +45,12 @@ public class App {
                     break;
                 case Command.remove:
                     CommandLanguage.evaluate(Command.remove, parts[1]);
+                    break;
+                case Command.save:
+                    CommandLanguage.evaluate(Command.save);
+                    break;
+                case Command.load:
+                    CommandLanguage.evaluate(Command.load);
                     break;
                 case Command.display:
                     CommandLanguage.evaluate(Command.display);

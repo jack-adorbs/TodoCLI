@@ -1,11 +1,10 @@
 package TaskManager;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
-public class TaskManager {
-    private List<Task> tasks;
+public class TaskManager implements Serializable {
+    private ArrayList<Task> tasks;
 
-    //TODO: Add persistant memory.
     public TaskManager() {
         tasks = new ArrayList<>();
     }

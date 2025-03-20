@@ -1,4 +1,9 @@
 package CommandLanguage;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -13,6 +18,8 @@ public class CommandLanguage {
         edit,
         remove,
         display,
+        save,
+        load,
         _unknown
     }
 
@@ -25,6 +32,8 @@ public class CommandLanguage {
         Map.entry(Command.add, (args) -> CommandLanguage.add((String)args[0])),
         Map.entry(Command.edit, (args) -> CommandLanguage.edit((String)args[0])),
         Map.entry(Command.remove, (args) -> CommandLanguage.remove(Integer.parseInt((String)args[0]))),
+        Map.entry(Command.save, (_) -> CommandLanguage.save()),
+        Map.entry(Command.load, (_) -> CommandLanguage.load()),
         Map.entry(Command.display, (_) -> CommandLanguage.display()),
         Map.entry((Command._unknown), (_) -> CommandLanguage.unknown())
     );
@@ -46,7 +55,10 @@ public class CommandLanguage {
     private static void edit(String args) {
         String[] parts = args.split("\\s+", 2);
 
-        if (parts[1].equalsIgnoreCase("true") || parts[1].equalsIgnoreCase("false")) {
+        if (
+            (parts[1].equalsIgnoreCase("true") || parts[1].equalsIgnoreCase("false")) 
+            && parts.length == 2
+            ) {
             _taskManager.editTask(Integer.parseInt(parts[0]), Boolean.parseBoolean(parts[1]));
         } else {
             _taskManager.editTask(Integer.parseInt(parts[0]), parts[1]);
@@ -55,6 +67,27 @@ public class CommandLanguage {
 
     private static void remove(Integer i) {
         _taskManager.removeTask(i);
+    }
+
+    private static void save() {
+        String filename = "data.ser";
+        
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+            out.writeObject(_taskManager);
+            System.out.println("Tasks successfully saved.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void load() {
+        String filename = "data.ser";
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+            _taskManager = (TaskManager)in.readObject();
+            System.out.println("Tasks successfully loaded.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void display() {
